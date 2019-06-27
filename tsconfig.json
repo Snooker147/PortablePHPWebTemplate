@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "allowJs": false,
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": true,
+        "sourceMap": false,
+        "outDir": "control/dist",
+    },
+    "include": [
+        "control/"
+    ],
+    "exclude": [
+        "control/dist"
+    ]
+}

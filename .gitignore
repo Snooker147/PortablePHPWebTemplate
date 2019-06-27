@@ -1,0 +1,4 @@
+bin/php
+node_modules
+
+www/phpmyadmin
