@@ -1,13 +1,19 @@
 import { writeFileSync, unlinkSync, renameSync } from "fs";
 import * as AdmZip from "adm-zip";
 
-import Utils from "./Utils";
+import Utils from "../Utils";
 import { join } from "path";
+import Module from "./Module";
 
 const mysqlServer = require("mysql-server");
 
-class SQL
+class SQL extends Module
 {
+
+    public constructor()
+    {
+        super("mysql");
+    }
 
     public async start()
     {
@@ -27,21 +33,27 @@ class SQL
             }
 
             const configPath = "node_modules/mysql-server/lib/xampp/mysql/bin/my.ini.backup";
+            const dstConfigPath = "node_modules/mysql-server/lib/xampp/mysql/bin/my.ini";
             console.log(`Updating MySQL ${configPath}...`);
 
-            let cfg = await Utils.readFile(configPath);
-            
-            console.log("Adding skip-grant-tables and FULLDIR to configuration file...");
-            cfg = cfg.replace("[mysqld]", "[mysqld]\nskip-grant-tables");
-            cfg = cfg.replace(/#FULLDIR#/g, join(process.cwd(), "node_modules", "mysql-server").replace(/\\/g, "/"));
+            if(await Utils.fileExists(dstConfigPath))
+            {
+                console.log("Config file already exists, skipping updation");
+            }
+            else
+            {
+                let cfg = await Utils.readFile(configPath);
+                
+                console.log("Adding skip-grant-tables and FULLDIR to configuration file...");
+                cfg = cfg.replace("[mysqld]", "[mysqld]\nskip-grant-tables");
+                cfg = cfg.replace(/#FULLDIR#/g, join(process.cwd(), "node_modules", "mysql-server").replace(/\\/g, "/"));
+    
+                writeFileSync(dstConfigPath, cfg);
+    
+                console.log("Done");
+            }
 
-            writeFileSync("node_modules/mysql-server/lib/xampp/mysql/bin/my.ini", cfg);
-
-            console.log("Done");
-
-            console.log("Starting MySQL server...");
             mysqlServer.start();
-            console.log("MySQL server running");
 
             return true;
         }
@@ -50,13 +62,6 @@ class SQL
             console.error(`Failed to start MySQL server: ${e}`);
             return false;
         }
-    }
-
-    public stop()
-    {
-        console.log("Stopping MySQL server...");
-        mysqlServer.stop();
-        console.log("Done");
     }
 
 }

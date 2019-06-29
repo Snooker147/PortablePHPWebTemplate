@@ -1,7 +1,10 @@
-.node-is-awesome {
-    color: red;
+@import "./variables";
+@import "./header";
+
+.php {
+    color: green;
 
     span {
-        color: green;
+        color: red;
     }
 }

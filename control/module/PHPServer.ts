@@ -1,16 +1,27 @@
 import * as CommandExists from "command-exists";
 import * as AdmZip from "adm-zip";
+import * as Express from "express";
 import Fetch from "node-fetch";
 
-import Utils from "./Utils";
-import { join, dirname } from "path";
+import Utils from "../Utils";
+import { join } from "path";
+import Module from "./Module";
+import SCSS from "./SCSS";
+import { existsSync } from "fs";
 
-export default class PHPServer
+class PHPServer extends Module
 {
 
     private running: boolean = false;
-
     private server: any = null;
+
+    private styleSource: string = "";
+    private scriptSource: string = "";
+
+    public constructor()
+    {
+        super("phpserver");
+    }
 
     public async start()
     {
@@ -28,6 +39,63 @@ export default class PHPServer
             }
         }
 
+        const middle = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+            const path = req.path;
+            const hasDot = path.indexOf(".") !== -1;
+
+            res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private'); // Disable caching
+
+            if(!hasDot && !path.endsWith("/"))
+            {
+                res.redirect(`${req.url}/`);
+            }
+            else
+            {
+                if(path === "/")
+                {
+                    next();
+                    return;
+                }
+                else if(path === "/compiled.js")
+                {
+                    res.send(this.scriptSource);
+                }
+                else if(path === "/compiled.css")
+                {
+                    SCSS.compile().then(css => {
+                        if(css)
+                        {
+                            this.styleSource = css;
+                        }
+
+                        res.contentType("text/css");
+                        res.send(this.styleSource);
+                    });
+                }
+                else
+                {
+                    let filePath = path;
+
+                    if(!hasDot && path.endsWith("/"))
+                    {
+                        filePath = `${path}/index.php`;
+                    }
+
+                    const fl = `www/${filePath}`;
+                    
+                    if(existsSync(fl))
+                    {
+                        next();        
+                    }
+                    else
+                    {
+                        res.redirect("/404.php");
+                    }
+                }
+            }
+            
+        };
+
         return new Promise<boolean>(res => {
 
             const config: any = {
@@ -35,6 +103,7 @@ export default class PHPServer
                 ini_config: "./php.ini",
                 bin: phpPortable ? "bin/php/php.exe" : "php",
                 root: "./www",
+                middleware: [ middle ],
                 output: {
                     ip: false,
                     date: false,
@@ -167,6 +236,19 @@ export default class PHPServer
         });
     }
 
+    public setScriptString(src: string)
+    {
+        this.scriptSource = src;
+    }
+
+    public setStyleSource(src: string)
+    {
+        this.styleSource = src;
+    }
+
     public isRunning() { return this.running; }
 
+
 }
+
+export default new PHPServer();

@@ -1,13 +1,19 @@
 import Fetch from "node-fetch";
 import * as AdmZip from "adm-zip";
-import Utils from "./Utils";
+import Utils from "../Utils";
 import { renameSync, copyFileSync } from "fs";
 import { join } from "path";
+import Module from "./Module";
 
-class PHPMyAdmin
+class PHPMyAdmin extends Module
 {
     private readonly indexPath = "./www/phpmyadmin/index.php";
     private readonly url = "https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-english.zip";
+
+    public constructor()
+    {
+        super("phpmyadmin");
+    }
 
     public async start()
     {

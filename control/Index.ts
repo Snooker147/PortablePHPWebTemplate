@@ -1,30 +1,34 @@
-import PHPServer from "./PHPServer";
-import SQL from "./SQL";
-import PHPMyAdmin from "./PHPMyAdmin";
+import PHPServer from "./module/PHPServer";
+import SQL from "./module/SQL";
+import PHPMyAdmin from "./module/PHPMyAdmin";
+import Module from "./module/Module";
+import SCSS from "./module/SCSS";
 
 async function main()
 {
-    const server = new PHPServer();
+    console.clear();
 
-    if(!await server.start())
+    const modules: Module[] = [
+        PHPServer,
+        PHPMyAdmin,
+        SQL,
+        SCSS
+    ];
+
+    for(const m of modules)
     {
-        console.error("Failed to start PHP Server");
-        process.exit(-1);
-    }
-    
-    if(!await PHPMyAdmin.start())
-    {
-        console.error("Failed to download PHPMyAdmin");
-        process.exit(-1);
-    }
-    
-    if(!await SQL.start())
-    {
-        console.error("Failed to start MySQL server");
-        process.exit(-1);
+        console.log(`Starting ${m.getName()}...`);
+
+        if(!await m.start())
+        {
+            console.error(`\x1b[31m --- Failed to start ${m.getName()} ---\x1b[0m`);
+            process.exit(-1);
+        }
+
+        console.log(`${m.getName()} is running!`);
     }
 
-    console.log("All up and running!");
+    console.log("\x1b[32m --- All up and running! ---\x1b[0m");
 }
 
 main();

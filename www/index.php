@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <link rel="stylesheet" href="compiled.css">
+    
     <title>Document</title>
 </head>
 <body>
@@ -16,11 +19,6 @@
         <span>This should be red</span> and this should be green
     </p>
 
-    <?php 
-
-        print_r(get_loaded_extensions());
-        phpinfo();
-    ?>
-    
+    <script src="compiled.js"></script>
 </body>
 </html>

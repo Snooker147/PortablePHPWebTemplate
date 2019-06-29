@@ -8,25 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const PHPServer_1 = require("./PHPServer");
-const SQL_1 = require("./SQL");
-const PHPMyAdmin_1 = require("./PHPMyAdmin");
+const PHPServer_1 = require("./module/PHPServer");
+const SQL_1 = require("./module/SQL");
+const PHPMyAdmin_1 = require("./module/PHPMyAdmin");
+const SCSS_1 = require("./module/SCSS");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const server = new PHPServer_1.default();
-        if (!(yield server.start())) {
-            console.error("Failed to start PHP Server");
-            process.exit(-1);
+        console.clear();
+        const modules = [
+            PHPServer_1.default,
+            PHPMyAdmin_1.default,
+            SQL_1.default,
+            SCSS_1.default
+        ];
+        for (const m of modules) {
+            console.log(`Starting ${m.getName()}...`);
+            if (!(yield m.start())) {
+                console.error(`\x1b[31m --- Failed to start ${m.getName()} ---\x1b[0m`);
+                process.exit(-1);
+            }
+            console.log(`${m.getName()} is running!`);
         }
-        if (!(yield PHPMyAdmin_1.default.start())) {
-            console.error("Failed to download PHPMyAdmin");
-            process.exit(-1);
-        }
-        if (!(yield SQL_1.default.start())) {
-            console.error("Failed to start MySQL server");
-            process.exit(-1);
-        }
-        console.log("All up and running!");
+        console.log("\x1b[32m --- All up and running! ---\x1b[0m");
     });
 }
 main();
