@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="compiled.css">
     
-    <title>Document</title>
+    <title>PHP With Node!</title>
 </head>
 <body>
 
@@ -19,6 +19,8 @@
         <span>This should be red</span> and this should be green
     </p>
 
-    <script src="compiled.js"></script>
+    <img src="assets/dog.jpg" alt="">
+
+    <script src="scripts/script.js"></script>
 </body>
 </html>

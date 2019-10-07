@@ -1,5 +1,5 @@
 {
-	"name": "web-php-template",
+	"name": "node-php-web",
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
@@ -9,6 +9,10 @@
 		"publish": "node control/dist/Publish.js"
 	},
 	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Snooker147/NodePHPWeb"
+	},
 	"author": "Dominik 'Snooker147' Rataj <snooker147.server@gmail.com> (https://twitter.com/MrSnooker_147)",
 	"license": "ISC",
 	"devDependencies": {
