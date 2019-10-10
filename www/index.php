@@ -12,7 +12,7 @@
 <body>
 
     <p>
-        Now is: <?php echo strftime("%d.%m %H:%M"); ?>
+        <?php phpinfo(); ?>
     </p>
 
     <p class="php">

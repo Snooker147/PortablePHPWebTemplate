@@ -2,5 +2,6 @@
     "php.validate.run": "onSave",
     "php.suggest.basic": true,
     "php.validate.enable": true,
-    "php.validate.executablePath": "bin/php/php.exe"
+    "php.validate.executablePath": "bin/php/php.exe",
+    "php.executablePath": "bin/php/php.exe",
 }
